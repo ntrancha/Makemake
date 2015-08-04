@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/03 17:00:23 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/03 21:07:31 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/04 03:33:53 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,13 +144,17 @@ void        make_header(t_opt *options)
 {
     char    *flag;
     char    *name;
+    char    *user;
 
     name = ft_optgetopt_double(options, "-n");
     if (!name)
         name = "libft.a";
     flag = ft_optgetopt_double(options, "-f");
     if (!flag)
-        flag = "libft.a";
+        flag = "-Wall -Wextra -Werror -g";
+    user = NULL;
+    ft_putendl("Nom de la librairie:");
+    ft_readstdin(&user);
 }
 
 int         main(int argc, char **argv)
