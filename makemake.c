@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/03 17:00:23 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/04 05:06:52 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/04 05:13:02 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,7 @@ void        create(t_list *list)
     ft_putendl(content);
     ft_strdel(&content);
     ft_listdel(str, ft_memdel);
+    ft_putstr("\n");
 }
 
 void        make_the_makefile(t_list *list, t_list *source)
@@ -182,7 +183,6 @@ void        make_the_makefile(t_list *list, t_list *source)
         else if (test == 3)
         {
             create(source);
-            ft_putstr("\n");
             test = 0;
         }
         else
@@ -191,16 +191,13 @@ void        make_the_makefile(t_list *list, t_list *source)
     }
 }
 
-void        make_header(t_list *source)
+void        make_header(t_list *source, int num, int size)
 {
     char    *content;
     char    *content2;
     char    *line;
-    int     num;
-    int     size;
     t_list  *list;
 
-    num = 0;
     list = ft_listcreate();
     content = ft_get_file("libft/Makefile");
     content2 = ft_strsub(content, 0, ft_strlen(content) - 1);
@@ -237,7 +234,7 @@ int         main(int argc, char **argv)
         ft_strdel(&file);
         file = ft_optgetopt_next(files);
     }
-    make_header(list);
+    make_header(list, 0, 0);
     ft_listdel(list, ft_memdel);
     ft_optdel(files);
     return (1);
