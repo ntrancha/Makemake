@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/03 17:00:23 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/04 05:13:02 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/04 05:17:44 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ int         add_source(t_node *node, t_list *str, int col, int max)
     return (col);
 }
 
-void        create(t_list *list)
+int         create(t_list *list)
 {
     int     max;
     t_node  *node;
@@ -159,6 +159,7 @@ void        create(t_list *list)
     ft_strdel(&content);
     ft_listdel(str, ft_memdel);
     ft_putstr("\n");
+    return (0);
 }
 
 void        make_the_makefile(t_list *list, t_list *source)
@@ -181,10 +182,7 @@ void        make_the_makefile(t_list *list, t_list *source)
         else if (test == 2)
             ft_listdelnode(list, node, ft_memdel);
         else if (test == 3)
-        {
-            create(source);
-            test = 0;
-        }
+            test = create(source);
         else
             ft_putendl((char *)node->content);
         node = next;
