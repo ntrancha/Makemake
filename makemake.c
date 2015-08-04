@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/03 17:00:23 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/04 03:33:53 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/04 04:41:17 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,21 +140,50 @@ void        create(t_list *list)
     ft_listdel(str, ft_memdel);
 }
 
+void        make_the_makefile(t_list *list)
+{
+    t_node  *node;
+    int     num;
+
+    node = list->start;
+    num = 0;
+    while (node)
+    {
+        if (node->content && ft_strcchr((char *)node->content, "FILE =") != 0)
+            ft_putendl(node->content);
+        num++;
+        node = node->next;
+    }
+}
+
 void        make_header(t_opt *options)
 {
-    char    *flag;
-    char    *name;
-    char    *user;
+    char    *content;
+    char    *content2;
+    char    *line;
+    int     num;
+    int     size;
+    t_list  *list;
 
-    name = ft_optgetopt_double(options, "-n");
-    if (!name)
-        name = "libft.a";
-    flag = ft_optgetopt_double(options, "-f");
-    if (!flag)
-        flag = "-Wall -Wextra -Werror -g";
-    user = NULL;
-    ft_putendl("Nom de la librairie:");
-    ft_readstdin(&user);
+    num = 0;
+    list = ft_listcreate();
+    content = ft_get_file("libft/Makefile");
+    content2 = ft_strsub(content, 0, ft_strlen(content) - 1);
+    line = ft_strgetline(content2, num++);
+    ft_listadd(list, line);
+    size = (int)ft_strlen(content2) - ft_strlen(line);
+    while (line)
+    {
+        line = ft_strgetline(content2, num++);
+        ft_listadd(list, line);
+        if (line)
+            size -= (int)ft_strlen(line);
+        if (size <= 1)
+            line = NULL;
+    }
+    make_the_makefile(list);
+    ft_strdel(&content);
+    ft_listdel(list, ft_memdel);
 }
 
 int         main(int argc, char **argv)
