@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/03 17:00:23 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/04 04:41:17 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/04 05:06:52 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,21 @@ void        col1(t_list *str, char *content, int size, int max)
     ft_listadd(str, ft_strdup("\\\n"));
 }
 
+void        col2(t_list *str, char *content, int size, int max)
+{
+    ft_listadd(str, ft_strdup("FILE =\t"));
+    ft_listadd(str, content);
+    while (size % 4 != 0)
+    {
+        ft_listadd(str, ft_strdup(" "));
+        size++;
+    }
+    while (size + 4 <= max)
+    {
+        ft_listadd(str, ft_strdup("\t"));
+        size += 4;
+    }
+}
 
 int         add_source(t_node *node, t_list *str, int col, int max)
 {
@@ -108,8 +123,13 @@ int         add_source(t_node *node, t_list *str, int col, int max)
     char    *content;
 
     size = ft_strlen((char *)node->content);
-    col = (col) ? 0 : 1;
     content = ft_strdup((char *)node->content);
+    if (col == -1)
+    {
+        col2(str, content, size, max);
+        return (0);
+    }
+    col = (col) ? 0 : 1;
     if (col == 0)
         col0(str, content, size, max);
     else
@@ -127,7 +147,7 @@ void        create(t_list *list)
 
     max = (((ft_liststrlenmax(list) / 4) + 1) * 4);
     node = list->start;
-    col = 1;
+    col = -1;
     str = ft_listcreate();
     while (node)
     {
@@ -140,23 +160,38 @@ void        create(t_list *list)
     ft_listdel(str, ft_memdel);
 }
 
-void        make_the_makefile(t_list *list)
+void        make_the_makefile(t_list *list, t_list *source)
 {
     t_node  *node;
-    int     num;
+    t_node  *next;
+    int     test;
 
     node = list->start;
-    num = 0;
+    test = 0;
     while (node)
     {
+        next = node->next;
         if (node->content && ft_strcchr((char *)node->content, "FILE =") != 0)
-            ft_putendl(node->content);
-        num++;
-        node = node->next;
+            test = 1;
+        if (test == 2 && node->content && ft_strlen((char *)node->content) < 2)
+            test = 3;
+        if (test == 1)
+            test = 2;
+        else if (test == 2)
+            ft_listdelnode(list, node, ft_memdel);
+        else if (test == 3)
+        {
+            create(source);
+            ft_putstr("\n");
+            test = 0;
+        }
+        else
+            ft_putendl((char *)node->content);
+        node = next;
     }
 }
 
-void        make_header(t_opt *options)
+void        make_header(t_list *source)
 {
     char    *content;
     char    *content2;
@@ -181,8 +216,9 @@ void        make_header(t_opt *options)
         if (size <= 1)
             line = NULL;
     }
-    make_the_makefile(list);
+    make_the_makefile(list, source);
     ft_strdel(&content);
+    ft_strdel(&content2);
     ft_listdel(list, ft_memdel);
 }
 
@@ -193,7 +229,6 @@ int         main(int argc, char **argv)
     char    *file;
 
     files = ft_optget(argc, argv);
-    make_header(files);
     file = ft_optgetopt_next(files);
     list = ft_listcreate();
     while (file)
@@ -202,7 +237,7 @@ int         main(int argc, char **argv)
         ft_strdel(&file);
         file = ft_optgetopt_next(files);
     }
-    create(list);
+    make_header(list);
     ft_listdel(list, ft_memdel);
     ft_optdel(files);
     return (1);
