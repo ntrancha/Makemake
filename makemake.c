@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/03 17:00:23 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/04 05:17:44 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/11 20:52:01 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,6 +217,34 @@ void        make_header(t_list *source, int num, int size)
     ft_listdel(list, ft_memdel);
 }
 
+int         add_all(t_list *list, char *file)
+{
+    char    *ret; 
+    char    *line;
+    int     index;
+    int     size;
+
+    ft_strdel(&file);
+    file = get_header("libft");
+    index = 11;
+    line = ft_strgetline(file, index++);
+    size = (int)ft_strlen(file) - ft_strlen(line);
+    while (line)
+    {
+        line = ft_strgetline(file, index++);
+        if (line && line[ft_strlen(line) - 1] == '"')
+        {
+            ret = ft_strsub(line, 11, ft_strlen(line) - 14);
+            add_header(ret, list);
+            ft_strdel(&ret);
+        }
+        if (line)
+            size -= (int)ft_strlen(line);
+        if (size <= 1)
+            line = NULL;
+    }
+}
+
 int         main(int argc, char **argv)
 {
     t_opt   *files;
@@ -226,12 +254,15 @@ int         main(int argc, char **argv)
     files = ft_optget(argc, argv);
     file = ft_optgetopt_next(files);
     list = ft_listcreate();
-    while (file)
-    {
-        add_header(file, list);
-        ft_strdel(&file);
-        file = ft_optgetopt_next(files);
-    }
+    if (ft_strcmp(file, "-ALL") == 0)
+        add_all(list, file);
+    else
+        while (file)
+        {
+            add_header(file, list);
+            ft_strdel(&file);
+            file = ft_optgetopt_next(files);
+        }
     make_header(list, 0, 0);
     ft_listdel(list, ft_memdel);
     ft_optdel(files);
