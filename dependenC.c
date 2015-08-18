@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/18 03:48:33 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/18 07:09:11 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/18 07:48:15 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,51 @@ t_list      *traitement(char *file, t_list *files, char *path, t_list *headers)
     return (NULL);
 }
 
+void        make_files(t_list *list, char *path_src)
+{
+    t_node  *node;
+    t_list  *files;
+    char    *file;
+    char    *tmp;
+    char    *content;
+    int     count;
+    int     max;
+    int     test;
+
+    file = ft_strjoin(path_src, "/../Makefile");
+    files = ft_listcreate();
+    count = 0;
+    content = ft_get_file(file);
+    test = 0;
+    max = 0;
+    while (content[count])
+        if (content[count++] == '\n')
+            max++;
+    count = 0;
+    while (count < max)
+    {
+        tmp = ft_strgetline(content, count++);
+        if (test == 0 && ft_strncmp(tmp, "FILE ", 4) == 0)
+        {
+            test = 1;
+            ft_strdel(&tmp);
+        }
+        else if (test == 1 && ft_strlen(tmp) < 5)
+        {
+            test = 0;
+            ft_strdel(&tmp);
+        }
+        else if (test == 1)
+            ft_strdel(&tmp);
+        else
+            ft_listadd(files, (void *)tmp);
+    }
+    ft_listputstr(files, ft_putendl);
+    ft_listdel(files, ft_memdel);
+    ft_strdel(&file);
+    ft_strdel(&content);
+}
+
 void        make_header(t_list *list, char *path_src)
 {
     t_node  *node;
@@ -172,6 +217,7 @@ int         main(int argc, char **argv)
         option = ft_optgetopt_next(options);
     }
     make_header(headers, path_src);
+    make_files(files, path_src);
     ft_listputstr(files, ft_putendl);
     ft_strdel(&path_src);
     ft_listdel(files, ft_memdel);
