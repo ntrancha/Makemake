@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/18 03:48:33 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/18 21:32:35 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/18 22:31:51 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,7 @@ void        make_header(t_list *list, char *path_src)
     char    *tmp;
     char    *tmp2;
     char    *tmp3;
+    char    **tab;
     int     count;
     t_list  *header;
 
@@ -220,8 +221,10 @@ void        make_header(t_list *list, char *path_src)
         tmp = ft_strsub(node->content, ft_strlen(path_src) + 1, ft_strlen(node->content) - ft_strlen(path_src) - 1);
         if (tmp)
         {
-            ft_listadd(header, (void *)ft_strmjoin("# include \"", tmp, "\n"));
+            tab = ft_strsplit(tmp, '/');
+            ft_listadd(header, (void *)ft_strmjoin("# include \"", tab[2], "\"\n"));
             ft_strdel(&tmp);
+            ft_tabstrdel(tab);
         }
         node = node->next;
     }
