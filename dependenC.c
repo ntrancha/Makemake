@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/18 03:48:33 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/18 20:32:41 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/18 21:11:25 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,8 +135,6 @@ void        write_makefile(t_list *files, char *path)
     unlink(path);
     ft_write_file(path, str);
     ft_strdel(&str);
-
-
 }
 
 void        make_files(t_list *list, char *path_src)
@@ -235,6 +233,27 @@ void        make_header(t_list *list, char *path_src)
     ft_strdel(&tmp);
 }
 
+void       get_all(t_list *files, char *path, t_list *headers)
+{
+    t_fdos  *dir;
+    t_file *file;
+    t_node  *node;
+    char  *src;
+
+    src = ft_strjoin(path, "/");
+    src = ft_strdup("../minilibft/src/opt/");
+    dir = ft_getdir(src, NULL);
+    ft_putendl(src);
+    node = dir->start;
+    while (node)
+    {
+        file = (t_file*)node->content;
+        if (file && file->name)
+            ft_putendl(file->name);
+        node = node->next;
+    }
+}
+
 int         main(int argc, char **argv)
 {
     t_opt   *options;
@@ -243,16 +262,26 @@ int         main(int argc, char **argv)
     t_list  *files;
     t_list  *headers;
 
-    options = ft_optget(argc, argv);
     files = ft_listcreate();
     headers = ft_listcreate();
-    option = ft_optgetopt_next(options);
     path_src = ft_strdup("../minilibft/src");
-    while (option)
+    options = ft_optget(argc, argv);
+    option = ft_optgetopt_double(options, "-a");
+    if (option)
     {
-        traitement(option, files, path_src, headers);
+        get_all(files, path_src, headers);
         ft_strdel(&option);
+        return (-1);
+    }
+    else
+    {
         option = ft_optgetopt_next(options);
+        while (option)
+        {
+            traitement(option, files, path_src, headers);
+            ft_strdel(&option);
+            option = ft_optgetopt_next(options);
+        }
     }
     make_header(headers, path_src);
     make_files(files, path_src);
