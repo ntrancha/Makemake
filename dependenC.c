@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/18 03:48:33 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/18 07:48:15 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/18 19:57:58 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,7 +218,6 @@ int         main(int argc, char **argv)
     }
     make_header(headers, path_src);
     make_files(files, path_src);
-    ft_listputstr(files, ft_putendl);
     ft_strdel(&path_src);
     ft_listdel(files, ft_memdel);
     ft_listdel(headers, ft_memdel);
