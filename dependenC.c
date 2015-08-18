@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/18 03:48:33 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/18 05:41:21 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/18 05:46:35 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void        parse_header(char *content, t_list *files, char *path, char *path_sr
         if (line)
             ft_strdel(&line);
         line = ft_strgetline(content, start);
-        if (line && ft_strlen(line) > 5)
+        if (line && ft_strlen(line) > 5 && line[0] != '#')
             if (line[ft_strlen(line) - 1] == ';' && line[ft_strlen(line) - 2] == ')')
                 recup(line, files, ft_strmjoin(path_src, "/", path));
     }
