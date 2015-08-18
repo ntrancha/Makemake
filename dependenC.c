@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/18 03:48:33 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/18 19:57:58 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/18 20:30:38 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,12 +106,46 @@ t_list      *traitement(char *file, t_list *files, char *path, t_list *headers)
     return (NULL);
 }
 
+void        add_files(t_list *list, t_list *files)
+{
+    t_node  *node;
+    char    *tmp;
+
+    node = list->start;
+    if (node)
+    {
+        tmp = ft_strmjoin("FILE =\t", (char *)node->content, "\n");
+        ft_listadd(files, (void *)tmp);
+        node = node->next;
+        while (node)
+        {
+            tmp = ft_strmjoin("\t\t", (char *)node->content, "\n");
+            ft_listadd(files, (void *)tmp);
+            node = node->next;
+        }
+        ft_listadd(files, (void *)ft_strdup("\n"));
+    }
+}
+
+void        write_makefile(t_list *files, char *path)
+{
+    char *str;
+
+    str = ft_listtostr(files);
+    unlink(path);
+    ft_write_file(path, str);
+    ft_strdel(&str);
+
+
+}
+
 void        make_files(t_list *list, char *path_src)
 {
     t_node  *node;
     t_list  *files;
     char    *file;
     char    *tmp;
+    char    *tmp2;
     char    *content;
     int     count;
     int     max;
@@ -133,6 +167,7 @@ void        make_files(t_list *list, char *path_src)
         if (test == 0 && ft_strncmp(tmp, "FILE ", 4) == 0)
         {
             test = 1;
+            add_files(list, files);
             ft_strdel(&tmp);
         }
         else if (test == 1 && ft_strlen(tmp) < 5)
@@ -143,9 +178,13 @@ void        make_files(t_list *list, char *path_src)
         else if (test == 1)
             ft_strdel(&tmp);
         else
-            ft_listadd(files, (void *)tmp);
+        {
+            tmp2 = ft_strjoin(tmp, "\n");
+            ft_listadd(files, (void *)tmp2);
+            ft_strdel(&tmp);
+        }
     }
-    ft_listputstr(files, ft_putendl);
+    write_makefile(files, file);
     ft_listdel(files, ft_memdel);
     ft_strdel(&file);
     ft_strdel(&content);
@@ -188,7 +227,6 @@ void        make_header(t_list *list, char *path_src)
     }
     ft_listadd(header, (void *)ft_strdup("\n#endif\n"));
     tmp = ft_listtostr(header);
-    ft_putendl(tmp);
     unlink(tmp2);
     ft_write_file(tmp2, tmp);
     ft_listdel(header, ft_memdel);
