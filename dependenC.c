@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/18 03:48:33 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/18 21:22:09 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/18 21:32:35 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,14 +112,15 @@ void        add_files(t_list *list, t_list *files)
     char    *tmp;
 
     node = list->start;
+    ft_putendl("ok");
     if (node)
     {
-        tmp = ft_strmjoin("FILE =\t", (char *)node->content, "\n");
+        tmp = ft_strmjoin("FILE =\t", (char *)node->content, "\\\n");
         ft_listadd(files, (void *)tmp);
         node = node->next;
         while (node)
         {
-            tmp = ft_strmjoin("\t\t", (char *)node->content, "\n");
+            tmp = ft_strmjoin("\t\t", (char *)node->content, "\\\n");
             ft_listadd(files, (void *)tmp);
             node = node->next;
         }
@@ -182,6 +183,7 @@ void        make_files(t_list *list, char *path_src)
             ft_strdel(&tmp);
         }
     }
+    //ft_listputstr(files, ft_putstr);
     write_makefile(files, file);
     ft_listdel(files, ft_memdel);
     ft_strdel(&file);
