@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/18 03:48:33 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/18 05:46:35 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/18 06:37:00 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,21 +109,35 @@ t_list      *traitement(char *file, t_list *files, char *path, t_list *headers)
 void        make_header(t_list *list, char *path_src)
 {
     t_node  *node;
+    char    *file;
     char    *tmp;
+    char    *tmp2;
+    int     count;
+    t_list  *header;
 
+    header = ft_listcreate();
     node = list->start;
-    ft_putendl("#ifndef LIBFT_H");
-    ft_putendl("# define LIBFT_H\n");
+    count = 0;
+    tmp2 = ft_strjoin(path_src, "/../includes/libft.h");
+    file = ft_get_file(tmp2);
+    ft_strdel(&tmp2);
+    while (count < 12)
+    {
+        tmp2 = ft_strgetline(file, count++);
+        if (tmp2)
+            ft_listadd(header, (void *)tmp2);
+    }
+    ft_strdel(&file);
     while (node)
     {
-        ft_putstr("# include \"");
-        tmp = ft_strsub(node->content, ft_strlen(path_src) + 1, ft_strlen(node->content));
-        ft_putstr(tmp);
-        ft_strdel(&tmp);
-        ft_putendl("\"");
+        tmp = ft_strsub(node->content, ft_strlen(path_src) + 1, ft_strlen(node->content) - ft_strlen(path_src) - 1);
+        if (tmp)
+            ft_listadd(header, (void *)ft_strmjoin("# include \"", tmp, "\""));
         node = node->next;
     }
-    ft_putendl("\n#endif");
+    ft_listadd(header, (void *)ft_strdup("#endif"));
+    ft_listputstr(header, ft_putendl);
+    ft_listdel(header, ft_memdel);
 }
 
 int         main(int argc, char **argv)
