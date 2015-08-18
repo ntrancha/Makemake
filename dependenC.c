@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/18 03:48:33 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/18 06:37:00 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/18 07:09:11 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ void        make_header(t_list *list, char *path_src)
     char    *file;
     char    *tmp;
     char    *tmp2;
+    char    *tmp3;
     int     count;
     t_list  *header;
 
@@ -120,24 +121,35 @@ void        make_header(t_list *list, char *path_src)
     count = 0;
     tmp2 = ft_strjoin(path_src, "/../includes/libft.h");
     file = ft_get_file(tmp2);
-    ft_strdel(&tmp2);
-    while (count < 12)
+    while (count < 15)
     {
-        tmp2 = ft_strgetline(file, count++);
-        if (tmp2)
-            ft_listadd(header, (void *)tmp2);
+        tmp = ft_strgetline(file, count++);
+        if (tmp)
+        {
+            tmp3 = ft_strjoin(tmp, "\n");
+            ft_listadd(header, (void *)tmp3);
+            ft_strdel(&tmp);
+        }
     }
-    ft_strdel(&file);
     while (node)
     {
         tmp = ft_strsub(node->content, ft_strlen(path_src) + 1, ft_strlen(node->content) - ft_strlen(path_src) - 1);
         if (tmp)
-            ft_listadd(header, (void *)ft_strmjoin("# include \"", tmp, "\""));
+        {
+            ft_listadd(header, (void *)ft_strmjoin("# include \"", tmp, "\n"));
+            ft_strdel(&tmp);
+        }
         node = node->next;
     }
-    ft_listadd(header, (void *)ft_strdup("#endif"));
-    ft_listputstr(header, ft_putendl);
+    ft_listadd(header, (void *)ft_strdup("\n#endif\n"));
+    tmp = ft_listtostr(header);
+    ft_putendl(tmp);
+    unlink(tmp2);
+    ft_write_file(tmp2, tmp);
     ft_listdel(header, ft_memdel);
+    ft_strdel(&file);
+    ft_strdel(&tmp2);
+    ft_strdel(&tmp);
 }
 
 int         main(int argc, char **argv)
