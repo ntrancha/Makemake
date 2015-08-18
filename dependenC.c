@@ -6,7 +6,7 @@
 /*   By: ntrancha <ntrancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/08/18 03:48:33 by ntrancha          #+#    #+#             */
-/*   Updated: 2015/08/18 21:11:25 by ntrancha         ###   ########.fr       */
+/*   Updated: 2015/08/18 21:22:09 by ntrancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,24 +264,18 @@ int         main(int argc, char **argv)
 
     files = ft_listcreate();
     headers = ft_listcreate();
-    path_src = ft_strdup("../minilibft/src");
     options = ft_optget(argc, argv);
-    option = ft_optgetopt_double(options, "-a");
+    option = ft_optgetopt_double(options, "-d");
     if (option)
-    {
-        get_all(files, path_src, headers);
-        ft_strdel(&option);
-        return (-1);
-    }
+        path_src = option;
     else
+        path_src = ft_strdup("../minilibft/src");
+    option = ft_optgetopt_next(options);
+    while (option)
     {
+        traitement(option, files, path_src, headers);
+        ft_strdel(&option);
         option = ft_optgetopt_next(options);
-        while (option)
-        {
-            traitement(option, files, path_src, headers);
-            ft_strdel(&option);
-            option = ft_optgetopt_next(options);
-        }
     }
     make_header(headers, path_src);
     make_files(files, path_src);
